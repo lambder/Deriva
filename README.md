@@ -1,6 +1,6 @@
 # Deriva
 
-<img src="http://raw.github.com/lsmbder/deriva/assets/PartialDerivative_800.gif"
+<img src="https://raw.github.com/lambder/Deriva/master/assets/PartialDerivative_800.gif"
  alt="Partial Derivative" title="Deriva" align="right" />
 
 <!-- > "Derivatives are financial weapons of mass destruction."
@@ -19,16 +19,16 @@ Deriva automates algorithmic differentiation in Java and Clojure projects.
 Add the following to your `:dependencies`:
 
 ```clj
-[criterium "0.4.2"]
+[deriva "0.1.0-SNAPSHOT"]
 ```
 
 ### Maven
 
 ```xml
 <dependency>
-  <groupId>criterium</groupId>
-  <artifactId>criterium</artifactId>
-  <version>0.4.2</version>
+  <groupId>deriva</groupId>
+  <artifactId>deriva</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -38,45 +38,45 @@ Add the following to your `:dependencies`:
 #### Simple example - sine function
 
 To use Deriva java DSL simply add the following lines to your code:
-{% highlight java %}
+```java
 import com.lambder.deriva.*;
 import static com.lambder.deriva.Deriva.*;
-{% endhighlight %}
-<script src="https://gist.github.com/lambder/f502d9174700fa7f24e0.js"></script>
+```
+
 
 now we can define sine expression, simply as:
 
-{% highlight java %}
+```java
 Expression expr = sin('x');
-{% endhighlight %}
+```
 
 Such expressions can be used as sub-expressions to build more complex math formulas. We’ll look at more complex example later on. Now let’s see how we can use an Expression. To execute the expression we need to create a function from it:
 
-{% highlight java %}
+```java
 Function fun = expr.function('x');
-{% endhighlight %}
+```
 
 Here we see that we use the `'x'` symbol (represented here by a single character, but regular Strings will do as well) to define mapping of symbols to the arguments of a function. Placing a symbol in a given place indicates which argument it will map to. It will become more clear, when we see function invocation:
 
 
 
-{% highlight java %}
+```java
 double result = fun.execute(Math.PI / 6);
-{% endhighlight %}
+```
 
 here `execute` takes `double` parameters (in our case one such parameter) and substitutes them into the underlying expression in accordance with the mapping defined when we called `function`. So in this case it replaces all occurrences of [ x ] with [ pi/6 ], making our original expression render [sin(pi/6)].
 
 Now to derivatives. In order to calculate a derivative of a given expression in respect to a given symbol, in Java we do:
 
-{% highlight java %}
+```java
 Expression expr_d_1 = d(expr, 'x');
-{% endhighlight %}
+```
 
 We can then use the expression, representing first order derivative on sine function [ ∂/(∂x) sin(x) ] , to obtain its value at point [t] by:
 
-{% highlight java %}
+```java
 double slope = expr_d_1.function('x').execute(t);
-{% endhighlight %}
+```
 
 #### More fun - gradients of multivariate functions
 
@@ -86,12 +86,12 @@ As an example lets take [ sin(x^2 y^2)  RR^2 => RR ] function.
 
 To get its gradient we do:
 
-{% highlight java %}
+```java
 Expression expr = sin(mul(sq('x'), sq('y')));
 Function1 fun = d(expr, 'x', 'y').function('x', 'y');  // (1)
 double[] result = fun.execute(1.0, 2.0);
 System.out.println(Arrays.toString(result));
-{% endhighlight %}
+```
 
 which prints:
 
@@ -105,18 +105,18 @@ The result is n-long array of doubles, which elements are values of correspondin
 
 The namespace we are using is `com.lambder.deriva.core`
 
-{% highlight clojure %}
+```clj
 (use 'com.lambder.deriva.core)
-{% endhighlight %}
+```
 
 ### Simple expression:
 
-{% highlight clojure %}
+```clj
 (def f (function (sin x)))
 (f 1) ;=> 0.8414709848078965
 (def g (function (∂ (sin x) x))
 (g 1) ;=> 0.5403023058681398
-{% endhighlight %}
+```
 
 
 ## More involved example - Black model[^3] with sensitivities
@@ -139,7 +139,7 @@ where
 
 ### in Java:
 
-{% highlight java %}
+```java
 import static com.lambder.deriva.Deriva.*;
 
 public class Formulas {
@@ -199,11 +199,11 @@ public class Formulas {
     fun.execute(12.3, 11.0, 0.02);
   }
 }
-{% endhighlight %}
+```
 
 ### in Clojure:
 
-{% highlight clojure %}
+```clj
 (use 'com.lambder.deriva.core)
 
 (def N
@@ -242,7 +242,7 @@ public class Formulas {
 (black-model-with-sensitivities 12.3 11.0 0.03)
 (black-model-with-sensitivities 12.3 11.0 0.02)
 
-{% endhighlight %}
+```
 
 
 
