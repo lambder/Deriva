@@ -1,7 +1,7 @@
-# Deriva
-
 <img src="https://raw.github.com/lambder/Deriva/master/assets/PartialDerivative_800.gif"
  alt="Partial Derivative" title="Deriva" align="right" />
+
+# Deriva
 
 <!-- > "Derivatives are financial weapons of mass destruction."
 > - [Warren Buffett] https://en.wikipedia.org/wiki/Warren_Buffett
