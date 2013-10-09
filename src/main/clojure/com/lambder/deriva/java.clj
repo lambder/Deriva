@@ -319,8 +319,8 @@
   Describtable
   (describe [this] 
             (let [        
-                  expression (optimize (derive-all this))
-                  expression (normalize-expression expression)
+                  expression (normalize-expression this)
+                  expression (optimize (derive-all expression))                  
                   expr_index (build-index expression)
                   inverted_expr_index (set/map-invert expr_index)
                   steps (distinct (reverse (exp2steps expression expr_index)))
