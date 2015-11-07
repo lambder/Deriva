@@ -101,6 +101,23 @@ which prints:
 
 The result is n-long array of doubles, which elements are values of corresponding partial derivatives in order defined in `function` (1) call.
 
+## Basic Clojure Usage
+
+The namespace we are using is `com.lambder.deriva.core`
+
+```clj
+(use 'com.lambder.deriva.core)
+```
+
+### Simple expression:
+
+```clj
+(def f (function (sin x)))
+(f 1) ;=> 0.8414709848078965
+(def g (function (∂ (sin x) x))
+(g 1) ;=> 0.5403023058681398
+```
+
 
 ## More involved example - Black model[^3] with sensitivities
 
@@ -184,6 +201,56 @@ public class Formulas {
 }
 ```
 
+### in Clojure:
+
+```clj
+(use 'com.lambder.deriva.core)
+
+(def N
+  '(/ 1
+      (+ 1
+         (exp (-
+                (* -0.07056 (pow x 3))
+                (* -1.5976 x))))))
+
+(def d1 '(/ (+ (/ F K) (* T (/ (sq sigma) 2)))))
+
+(def d2 '(/ (- (/ F K) (* T (/ (sq sigma) 2)))))
+
+(def call
+    `(*
+        (exp (- (* r T)))
+        (-
+          (* F ~(bind N 'x 'd1))
+          (* K ~(bind N 'x 'd2))))))
+
+(def put
+    `(*
+        (exp (- (* r T))
+        (-
+          (* F ~(bind N 'x '(- d1)))
+          (* K ~(bind N 'x '(- d2)))))))
+          
+(def-with-bind put
+    (*
+        (exp (- (* r T))
+        (-
+          (* F (bind N x (- d1)))
+          (* K (bind N x (- d2)))))))          
+
+(defn black-expression [call?] call put)
+
+
+;; usage
+
+(def black-model-with-sensitivities `(∂ ~(bind (black-expression true) 'T 0.523) F K r))
+
+(black-model-with-sensitivities 12.3 14.3 0.03)
+(black-model-with-sensitivities 12.3 11.0 0.03)
+(black-model-with-sensitivities 12.3 11.0 0.02)
+
+```
+
 
 
 ## Q&A
@@ -200,7 +267,7 @@ part of the application and run the generated code many times.
 Derive is by no means finished product. It is under active development and I already have gathered requests for new functionalities:
 
 1. Support for complex numbers
-2. Support for jabobians
+2. Support for jacobians
 3. Using arbitrary java code in Deriva expressions
 
 ## License
